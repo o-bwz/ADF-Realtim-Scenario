@@ -245,7 +245,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('Filter missing').output",
+								"value": "@activity('Filter missing').output.value",
 								"type": "Expression"
 							},
 							"isSequential": true,
