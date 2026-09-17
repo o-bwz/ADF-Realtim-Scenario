@@ -944,7 +944,7 @@
 								"referenceName": "DS_param_folderlevel",
 								"type": "DatasetReference",
 								"parameters": {
-									"p_container": "source",
+									"p_container": "destination",
 									"p_folder": "raw_gold_data"
 								}
 							},
