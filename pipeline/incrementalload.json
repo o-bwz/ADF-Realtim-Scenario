@@ -160,6 +160,12 @@
 									"type": "DelimitedTextReadSettings"
 								}
 							}
+						},
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": []
 						}
 					]
 				}
@@ -167,6 +173,9 @@
 		],
 		"variables": {
 			"temp_max_value": {
+				"type": "String"
+			},
+			"max_value": {
 				"type": "String"
 			}
 		},
