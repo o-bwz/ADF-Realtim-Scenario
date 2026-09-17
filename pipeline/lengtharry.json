@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "lengtharry",
 	"properties": {
 		"activities": [
 			{
@@ -19,7 +19,7 @@
 						"referenceName": "DS_param_folderlevel",
 						"type": "DatasetReference",
 						"parameters": {
-							"p_container": "source",
+							"p_container": "destination",
 							"p_folder": "raw_gold_data"
 						}
 					},
@@ -28,6 +28,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
