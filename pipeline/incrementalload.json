@@ -148,9 +148,12 @@
 										}
 									}
 								},
-								"fieldList": [],
+								"fieldList": [
+									"lastModified"
+								],
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -162,6 +165,11 @@
 				}
 			}
 		],
+		"variables": {
+			"temp_max_value": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
