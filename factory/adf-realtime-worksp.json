@@ -1,0 +1,15 @@
+{
+	"name": "adf-realtime-worksp",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "qatarcentral",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "dbad1f9c-8fc4-44c4-8ba1-8c9961139ade",
+		"tenantId": "cfe79fcc-d5a8-4753-8670-cf1e7f3bbd54"
+	}
+}
