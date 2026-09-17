@@ -135,8 +135,8 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Copy data1",
-						"type": "Copy",
+						"name": "Get Metadata1",
+						"type": "GetMetadata",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -147,56 +147,118 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"value": "@if(contains('gold_demand_sector.csv', 'demand'),pipeline().parameters.P_demand,pipeline().parameters.p_reserves)",
-								"type": "Expression"
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "DS_file_level",
+							"dataset": {
+								"referenceName": "DS_param_folderlevel",
 								"type": "DatasetReference",
 								"parameters": {
 									"p_container": "destination",
-									"p_folder": "raw_gold_data",
-									"p_file": "gold_demand_sector.csv"
+									"p_folder": "raw_gold_data"
 								}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Get Metadata1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
 							}
 						],
-						"outputs": [
-							{
-								"referenceName": "DS_file_level",
-								"type": "DatasetReference",
-								"parameters": {
-									"p_container": "source",
-									"p_folder": "raw_gold_data",
-									"p_file": "gold_demand_sector.csv"
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Get Metadata1').output.childItems",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Copy data1",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"value": "@if(contains(item().name,'demand'),pipeline().parameters.P_demand,pipeline().parameters.p_reserves)",
+											"type": "Expression"
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "DS_file_level",
+											"type": "DatasetReference",
+											"parameters": {
+												"p_container": "destination",
+												"p_folder": "raw_gold_data",
+												"p_file": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DS_file_level",
+											"type": "DatasetReference",
+											"parameters": {
+												"p_container": "source",
+												"p_folder": "raw_gold_data",
+												"p_file": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
+											}
+										}
+									]
 								}
-							}
-						]
+							]
+						}
 					}
 				],
 				"policy": {
@@ -296,99 +358,91 @@
 								{
 									"source": {
 										"name": "country_demand_sector (tonnes)",
-										"type": "String",
-										"physicalType": "String"
+										"type": "String"
 									},
 									"sink": {
 										"name": "country_demand_sector (tonnes)",
-										"type": "String",
-										"physicalType": "String"
+										"type": "String"
 									}
 								},
 								{
 									"source": {
 										"name": "2020",
-										"type": "String",
-										"physicalType": "String"
+										"type": "String"
 									},
 									"sink": {
 										"name": "2020",
-										"type": "String",
-										"physicalType": "String"
+										"type": "String"
 									}
 								},
 								{
 									"source": {
 										"name": "2021",
-										"type": "String",
-										"physicalType": "String"
+										"type": "String"
 									},
 									"sink": {
 										"name": "2021",
-										"type": "String",
-										"physicalType": "String"
+										"type": "String"
 									}
 								},
 								{
 									"source": {
 										"name": "2022",
-										"type": "String",
-										"physicalType": "String"
+										"type": "String"
 									},
 									"sink": {
 										"name": "2022",
-										"type": "String",
-										"physicalType": "String"
+										"type": "String"
 									}
 								},
 								{
 									"source": {
 										"name": "2023",
-										"type": "String",
-										"physicalType": "String"
+										"type": "String"
 									},
 									"sink": {
 										"name": "2023",
-										"type": "String",
-										"physicalType": "String"
+										"type": "String"
 									}
 								},
 								{
 									"source": {
 										"name": "Average",
-										"type": "String",
-										"physicalType": "String"
+										"type": "String"
 									},
 									"sink": {
 										"name": "Average",
-										"type": "String",
-										"physicalType": "String"
+										"type": "String"
 									}
 								},
 								{
 									"source": {
-										"name": "Prop_6",
-										"type": "String",
-										"physicalType": "String"
+										"name": "dummy",
+										"type": "String"
 									},
 									"sink": {
-										"name": "Prop_6",
-										"type": "String",
-										"physicalType": "String"
+										"name": "dummy",
+										"type": "String"
+									}
+								},
+								{
+									"source": {
+										"name": "dummy2",
+										"type": "String"
+									},
+									"sink": {
+										"name": "dummy2",
+										"type": "String"
 									}
 								}
-							],
-							"typeConversion": true,
-							"typeConversionSettings": {
-								"allowDataTruncation": true,
-								"treatBooleanAsNumber": false
-							}
+							]
 						}
 					}
 				},
 				"annotations": []
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_param_folderlevel')]",
 				"[concat(variables('factoryId'), '/datasets/DS_file_level')]"
 			]
 		},
