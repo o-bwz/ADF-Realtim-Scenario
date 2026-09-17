@@ -3,74 +3,6 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "incremental data",
-				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "DS_param_folderlevel",
-						"type": "DatasetReference",
-						"parameters": {
-							"p_container": "source",
-							"p_folder": "raw_gold_data"
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "DS_param_folderlevel",
-						"type": "DatasetReference",
-						"parameters": {
-							"p_container": "destination",
-							"p_folder": "raw_gold_data"
-						}
-					}
-				]
-			},
-			{
 				"name": "Get Metadata1",
 				"type": "GetMetadata",
 				"dependsOn": [],
@@ -164,8 +96,92 @@
 						{
 							"name": "If Condition1",
 							"type": "IfCondition",
-							"dependsOn": [],
-							"userProperties": []
+							"dependsOn": [
+								{
+									"activity": "Get Metadata2",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"ifTrueActivities": [
+									{
+										"name": "incremental data",
+										"type": "Copy",
+										"state": "Inactive",
+										"onInactiveMarkAs": "Succeeded",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "DelimitedTextSource",
+												"storeSettings": {
+													"type": "AzureBlobFSReadSettings",
+													"recursive": true,
+													"modifiedDatetimeStart": {
+														"value": "@variables('max_value')",
+														"type": "Expression"
+													},
+													"wildcardFileName": "*.csv",
+													"enablePartitionDiscovery": false
+												},
+												"formatSettings": {
+													"type": "DelimitedTextReadSettings"
+												}
+											},
+											"sink": {
+												"type": "DelimitedTextSink",
+												"storeSettings": {
+													"type": "AzureBlobFSWriteSettings"
+												},
+												"formatSettings": {
+													"type": "DelimitedTextWriteSettings",
+													"quoteAllText": true,
+													"fileExtension": ".txt"
+												}
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "DS_param_folderlevel",
+												"type": "DatasetReference",
+												"parameters": {
+													"p_container": "source",
+													"p_folder": "raw_gold_data"
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "DS_param_folderlevel",
+												"type": "DatasetReference",
+												"parameters": {
+													"p_container": "destination",
+													"p_folder": "raw_gold_data"
+												}
+											}
+										]
+									}
+								]
+							}
 						}
 					]
 				}
@@ -173,10 +189,12 @@
 		],
 		"variables": {
 			"temp_max_value": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "2000-09-17T09:28:54Z"
 			},
 			"max_value": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "2000-09-17T09:28:54Z"
 			}
 		},
 		"annotations": []
